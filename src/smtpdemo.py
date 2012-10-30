@@ -15,6 +15,18 @@ def attachFiles(message,filepaths):
         attachment.add_header('Content-Disposition','attachment; filename="%s"'%os.path.basename(file))
         message.attach(attachment)
 
+def loadMessageTemplate(filename,msgType = 'html'):
+    f = open(filename,'r')
+    msgbody = f.read()
+    message = MIMEText(msgbody,msgType)
+    return message
+
+def loadMessageRecipients(filename):
+    f = open(filename,'r')
+    recipients = [recipient for recipient in f]
+    return recipients
+        
+
 def main():
     print 'SWOOP'
     msg = MIMEMultipart('alternative')
