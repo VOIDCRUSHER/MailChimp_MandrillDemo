@@ -23,12 +23,12 @@ def loadMessageTemplate(filename,msgType = 'html'):
 
 def loadMessageRecipients(filename):
     f = open(filename,'r')
-    recipients = [recipient for recipient in f]
+    recipients = [recipient.strip() for recipient in f]
     return recipients
 
 def loadAttachmentList(filename):
     f = open(filename,'r')
-    attachments = [attachment for attachment in f]
+    attachments = [attachment.strip() for attachment in f]
     return attachments
 
 def sendMessageSMTP(username,password,sender,recipient_src,subject,template_src,attachment_src):    
