@@ -15,6 +15,7 @@ def attachFiles(message,filepaths):
         if not os.path.isfile(filename):
             print 'NO SUCH FILE: ',filename
             continue
+        print filename
         contentType, encoding = mimetypes.guess_type(filename)
         if contentType is None or encoding is not None:
             #No guess could be made or the file is encoded/compressed, treat it as binary
@@ -58,7 +59,7 @@ def loadAttachmentList(filename):
     return attachments
 
 def sendMessageSMTP(username,password,sender,recipient_src,subject,template_src,attachment_src):    
-    msg = MIMEMultipart('alternative')
+    msg = MIMEMultipart()
     
     msg['From'] = sender #sender_name<email_address>
     
