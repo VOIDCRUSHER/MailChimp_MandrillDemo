@@ -1,0 +1,7 @@
+apidemo.py
+attachments.txt
+HTemailtemplate.html
+MandrillMail.py
+recipients.txt
+smtpdemo.py
+codeExample.zip

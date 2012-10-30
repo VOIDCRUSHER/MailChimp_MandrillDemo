@@ -11,7 +11,7 @@ def main():
     sender = 'Cesar Flores <cgonzalezflores1@gmail.com>' #sender_name<email_address>
     recipient_src = 'recipients.txt'
     subject = 'HEYYY, SEXY MONKEY'
-    template_src = 'HTemailtemplate.txt'
+    template_src = 'HTemailtemplate.html'
     attachment_src = 'attachments.txt'
     
     MandrillMail.sendMessageSMTP(username, password, sender, recipient_src, subject, template_src, attachment_src)
