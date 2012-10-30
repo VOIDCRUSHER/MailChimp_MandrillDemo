@@ -3,6 +3,17 @@ import smtplib
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email.Utils import COMMASPACE
+from email import Encoders
+
+def attachFiles(message,filepaths):
+    for file in filepaths:
+        attachment = MIMEBase('application',"octet-stream")
+        attachment.set_payload(open(file,'rb').read())
+        Encoders.encode_base64(attachment)
+        attachment.add_header('Content-Disposition','attachment; filename="%s"'%os.path.basename(file))
+        message.attach(attachment)
 
 def main():
     print 'SWOOP'
@@ -10,7 +21,7 @@ def main():
     
     msg['Subject'] = 'Oppa Mandrill Style!'
     msg['From'] = 'Cesar Flores <cgonzalezflores1@gmail.com>' #sender_name<email_address>
-    msg['To'] = 'cgonzalez6@gatech.edu'
+    msg['To'] = ['cgonzalez6@gatech.edu']
     
     text = "Heyyy Sexy Raaady! (Plaintext Example)"
     part1 = MIMEText(text,'plain')
@@ -22,7 +33,7 @@ def main():
     password = os.environ['MANDRILL_PASSWORD']
     
     msg.attach(part1)
-    #msg.attach(part2)
+    msg.attach(part2)
     
     s = smtplib.SMTP('smtp.mandrillapp.com',587)
     
