@@ -1,13 +1,13 @@
 import os
 import smtplib
 import mimetypes
+import string
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
 from email.mime.audio import MIMEAudio
-from email.Utils import COMMASPACE
 from email import encoders
 
 def attachFiles(message,filepaths):
@@ -20,7 +20,7 @@ def attachFiles(message,filepaths):
         if contentType is None or encoding is not None:
             #No guess could be made or the file is encoded/compressed, treat it as binary
             contentType = 'application/octet-stream' 
-        maintype, subtype = contentType.split('/',1)
+        maintype, subtype = contentType.split('/')
         if maintype == 'text':
             f = open(filename,'r')
             #for generality, check the charset being used
@@ -35,7 +35,7 @@ def attachFiles(message,filepaths):
                 attachment = MIMEBase(maintype,subtype)
                 attachment.set_payload(f.read())
                 encoders.encode_base64(attachment)
-                attachment.add_header('Content-Disposition','attachment', filename=filename)
+        attachment.add_header('Content-Disposition','attachment', filename=filename)
         f.close()
         message.attach(attachment)
 
@@ -58,13 +58,17 @@ def loadAttachmentList(filename):
     f.close()
     return attachments
 
-def sendMessageSMTP(username,password,sender,recipient_src,subject,template_src,attachment_src):    
+def sendMessageSMTP(server,auth,sender,recipient_src,subject,template_src,attachment_src):    
+    assert type(server) == tuple
+    assert type(auth) == tuple
+    
     msg = MIMEMultipart()
     
     msg['From'] = sender #sender_name<email_address>
     
     recipients = loadMessageRecipients(recipient_src)
-    msg['To'] = COMMASPACE.join(recipients)
+    msg['To'] = string.join(recipients,'; ')
+    print msg['To']
     
     msg['Subject'] = subject
     
@@ -73,10 +77,13 @@ def sendMessageSMTP(username,password,sender,recipient_src,subject,template_src,
     
     attachments = loadAttachmentList(attachment_src)
     attachFiles(msg,attachments)
-            
-    s = smtplib.SMTP('smtp.mandrillapp.com',587)
-    
-    s.login(username,password)
+    host = server[0]
+    port = server[1]
+    s = smtplib.SMTP(host,port)
+    if auth:
+        username = auth[0]
+        password = auth[1]
+        s.login(username,password)
     s.sendmail(msg['From'],msg['To'],msg.as_string())
     
     s.quit()
