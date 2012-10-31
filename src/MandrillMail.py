@@ -67,8 +67,6 @@ def sendMessageSMTP(server,auth,sender,recipient_src,subject,template_src,attach
     msg['From'] = sender #sender_name<email_address>
     
     recipients = loadMessageRecipients(recipient_src)
-    msg['To'] = string.join(recipients,'; ')
-    print msg['To']
     
     msg['Subject'] = subject
     
@@ -84,6 +82,8 @@ def sendMessageSMTP(server,auth,sender,recipient_src,subject,template_src,attach
         username = auth[0]
         password = auth[1]
         s.login(username,password)
-    s.sendmail(msg['From'],msg['To'],msg.as_string())
-    
-    s.quit()
+    s.set_debuglevel(False) # show communication with the server if true
+    try:
+        s.sendmail(msg['From'],recipients,msg.as_string())
+    finally:
+        s.quit()
